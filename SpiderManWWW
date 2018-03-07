@@ -158,8 +158,8 @@ class DataOutput(object):
         for data in self.datas:
             fout.write("<tr>")
             fout.write("<td>%s</td>"%data['url'])
-            fout.write("<td>%s</td>" % data['title'])
-            fout.write("<td>%s</td>" % data['summary'])
+            fout.write("<td>%s</td>" %data['title'])
+            fout.write("<td>%s</td>" %data['summary'])
             fout.write("</tr>")
             self.datas.remove(data)
         fout.write("</table>")
@@ -179,7 +179,7 @@ class SpiderMan(object):
         # 添加入口 URL
         self.manager.add_new_url(root_url)
         # 判断 URL 管理器中是否有新的 url, 同时判断抓取了多少个 URL
-        while(self.manager.has_new_url() and self.manager.old_url_size() < 1000000):
+        while(self.manager.has_new_url() and self.manager.old_url_size() < 30):
             try:
                 # 从 URL 管理器获取新的 URL
                 new_url = self.manager.get_new_url()
