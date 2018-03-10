@@ -2,8 +2,10 @@
 
 import requests
 import re
+import mysql.connector
 from urllib import parse
 from bs4 import BeautifulSoup
+from mysql.connector import errorcode
 
 class UrlManager(object):
     def __init__(self):
@@ -145,10 +147,16 @@ class DataOutput(object):
 
     def __init__(self):
         self.datas=[]
+        self.cnx = mysql.connector.connect(user='huangyun',password='huangyun',host='192.168.51.101',database='pythondb')
+        self.cursor = self.cnx.cursor()
     def store_data(self,data):
         if data is None:
             return
         self.datas.append(data)
+        add_content = (" insert into content(url,title,summary) values(%s,%s,%s)")
+        content = (data["url"],data["title"],data["summary"])
+        self.cursor.execute(add_content,content)
+        self.cnx.commit()
 
     def output_html(self):
         fout = codecs.open('baike.html','w')
@@ -179,7 +187,7 @@ class SpiderMan(object):
         # 添加入口 URL
         self.manager.add_new_url(root_url)
         # 判断 URL 管理器中是否有新的 url, 同时判断抓取了多少个 URL
-        while(self.manager.has_new_url() and self.manager.old_url_size() < 30):
+        while(self.manager.has_new_url() and self.manager.old_url_size() < 300):
             try:
                 # 从 URL 管理器获取新的 URL
                 new_url = self.manager.get_new_url()
@@ -197,7 +205,7 @@ class SpiderMan(object):
                 print("failed to get content")
 
 
-        self.output.output_html()
+       # self.output.output_html()
 
 
 if __name__ =="__main__":
